@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarification & marge</title>
+<style>
+:root{
+  --bg:#f5f5f3;--card:#fff;--text:#171717;--muted:#6b6b6b;
+  --line:#e3e3df;--accent:#171717;--good:#176b45;--bad:#a53b3b;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:40px 20px 60px}
+header{margin-bottom:28px} h1{font-size:32px;margin:0 0 6px;letter-spacing:-.03em}
+header p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;
+box-shadow:0 2px 10px rgba(0,0,0,.025)}
+h2{font-size:16px;margin:0 0 20px}
+.field{margin:0 0 17px}.field:last-child{margin-bottom:0}
+label{display:block;font-size:13px;font-weight:650;margin-bottom:7px}
+label a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+input,select{width:100%;height:46px;border:1px solid #d8d8d4;border-radius:10px;
+padding:0 13px;font:inherit;background:#fff;color:inherit;outline:none}
+input:focus,select:focus{border-color:#777;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.musician-control{display:grid;grid-template-columns:56px 1fr 56px;gap:10px;align-items:center}
+.musician-control input{text-align:center;font-weight:700;font-size:18px}
+.step-btn{height:46px;border:1px solid #d8d8d4;border-radius:10px;background:#fff;color:var(--text);
+font:700 24px/1 inherit;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
+.step-btn:active{transform:scale(.97);background:#f0f0ed}
+.help{font-size:12px;color:var(--muted);margin-top:5px}
+.results{display:grid;gap:10px}
+.metric{padding:16px;border:1px solid var(--line);border-radius:13px;display:flex;
+justify-content:space-between;align-items:center;gap:15px}
+.metric span{color:var(--muted);font-size:13px}.metric strong{font-size:21px;letter-spacing:-.02em}
+.hero{background:#171717;color:#fff;border-radius:15px;padding:20px;margin-bottom:10px}
+.hero span{font-size:13px;color:#cfcfcf}.hero strong{display:block;font-size:34px;margin-top:5px}
+.badge{display:inline-block;margin-top:7px;padding:4px 8px;border-radius:999px;font-size:12px}
+.good{color:var(--good)} .bad{color:var(--bad)}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:16px}
+.full{grid-column:1/-1}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f4f4f1;
+border-radius:8px;padding:10px;font-size:12px;overflow:auto;margin-top:8px}
+@media(max-width:760px){
+  .grid{grid-template-columns:1fr}.full{grid-column:auto}
+  .wrap{padding:24px 14px 40px}
+  .card{padding:20px}
+  .musician-control{grid-template-columns:64px 1fr 64px;gap:12px}
+  .step-btn{height:56px;border-radius:12px;font-size:30px}
+  .musician-control input{height:56px;font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Tarification & marge</h1>
+<p>Calculateur de tarif, coûts, cachets et marge réelle.</p>
+</header>
+
+<div class="grid">
+<section class="card">
+<h2>Paramètres de la presta</h2>
+
+<div class="field">
+<label for="formula">Formule choisie</label>
+<select id="formula" onchange="calculate()" oninput="calculate()">
+<option value="La courte Swing">La courte Swing — 1 200 €</option>
+<option value="La Swing tout-terrain">La Swing tout-terrain — 1 500 €</option>
+<option value="La complète du Swing">La complète du Swing — 1 800 €</option>
+</select>
+</div>
+
+<div class="field">
+<label for="musicians">Nombre de musiciens</label>
+<div class="musician-control">
+<button class="step-btn" id="musiciansMinus" type="button" aria-label="Retirer un musicien" onclick="changeMusicians(-1)">−</button>
+<input id="musicians" type="number" min="0" step="1" value="4" inputmode="numeric" oninput="calculate()" onchange="calculate()">
+<button class="step-btn" id="musiciansPlus" type="button" aria-label="Ajouter un musicien" onclick="changeMusicians(1)">+</button>
+</div>
+<div class="help">Cachet calculé à 150 € par musicien.</div>
+</div>
+
+<div class="field">
+<label for="cost4">Coût essence et péages (<a href="https://futeroute.fr/" target="_blank" rel="noopener noreferrer">calculer ici</a>)</label>
+<input id="cost4" type="number" min="0" step="0.01" value="0" oninput="calculate()" onchange="calculate()">
+</div>
+
+<div class="field">
+<label for="cost5">Coût location d'un van</label>
+<input id="cost5" type="number" min="0" step="0.01" value="0" oninput="calculate()" onchange="calculate()">
+</div>
+
+<div class="field">
+<label for="cost6">Coût des trains</label>
+<input id="cost6" type="number" min="0" step="0.01" value="0" oninput="calculate()" onchange="calculate()">
+</div>
+
+<div class="field">
+<label for="cost7">Autres coûts</label>
+<input id="cost7" type="number" min="0" step="0.01" value="0" oninput="calculate()" onchange="calculate()">
+</div>
+
+<div class="field">
+<label for="actual">Tarif réellement facturé</label>
+<input id="actual" type="number" min="0" step="0.01" value="0" oninput="calculate()" onchange="calculate()">
+</div>
+</section>
+
+<section class="card">
+<h2>Résultats</h2>
+<div class="hero"><span>Tarif net</span><strong id="net">1 200,00 €</strong></div>
+<div class="results">
+<div class="metric"><span>Frais réels</span><strong id="costs">0,00 €</strong></div>
+<div class="metric"><span>Cachets</span><strong id="fees">600,00 €</strong></div>
+<div class="metric"><span>Total à facturer</span><strong id="invoice">1 200,00 €</strong></div>
+<div class="metric"><span>Marge nette visée €</span><strong id="margin">600,00 €</strong></div>
+<div class="metric"><span>Marge nette visée %</span><strong id="marginPct">50,00 %</strong></div>
+</div>
+</section>
+
+<section class="card full">
+<h2>Marge réelle</h2>
+<div class="results">
+<div class="metric"><span>Marge nette réelle €</span><strong id="realMargin">-600,00 €</strong></div>
+<div class="metric"><span>Marge nette réelle %</span><strong id="realMarginPct">0,00 %</strong></div>
+</div>
+</section>
+</div>
+</div>
+
+<script>
+var rates = {
+  "La courte Swing": 1200,
+  "La Swing tout-terrain": 1500,
+  "La complète du Swing": 1800
+};
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function numberValue(id) {
+  var node = byId(id);
+  if (!node) return 0;
+  var value = parseFloat(String(node.value).replace(',', '.'));
+  return isNaN(value) ? 0 : value;
+}
+
+function euro(value) {
+  var n = isFinite(value) ? value : 0;
+  try {
+    return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR'}).format(n);
+  } catch (e) {
+    return n.toFixed(2).replace('.', ',') + ' €';
+  }
+}
+
+function percent(value) {
+  var n = isFinite(value) ? value : 0;
+  try {
+    return new Intl.NumberFormat('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n) + ' %';
+  } catch (e) {
+    return n.toFixed(2).replace('.', ',') + ' %';
+  }
+}
+
+function setSignedClass(id, value) {
+  var node = byId(id);
+  if (!node) return;
+  if (value >= 0) {
+    node.classList.add('good');
+    node.classList.remove('bad');
+  } else {
+    node.classList.add('bad');
+    node.classList.remove('good');
+  }
+}
+
+function calculate() {
+  var formulaNode = byId('formula');
+  var formula = formulaNode ? formulaNode.value : '';
+  var net = rates[formula] || 0;
+  var costs = numberValue('cost4') + numberValue('cost5') + numberValue('cost6') + numberValue('cost7');
+  var fees = numberValue('musicians') * 150;
+  var invoice = net + costs;
+  var margin = invoice - costs - fees;
+  var marginPct = invoice ? (margin / invoice) * 100 : 0;
+  var actual = numberValue('actual');
+  var realMargin = actual - costs - fees;
+  var realMarginPct = actual ? (realMargin / actual) * 100 : 0;
+
+  byId('net').textContent = euro(net);
+  byId('costs').textContent = euro(costs);
+  byId('fees').textContent = euro(fees);
+  byId('invoice').textContent = euro(invoice);
+  byId('margin').textContent = euro(margin);
+  byId('marginPct').textContent = percent(marginPct);
+  byId('realMargin').textContent = euro(realMargin);
+  byId('realMarginPct').textContent = percent(realMarginPct);
+
+  setSignedClass('margin', margin);
+  setSignedClass('marginPct', marginPct);
+  setSignedClass('realMargin', realMargin);
+  setSignedClass('realMarginPct', realMarginPct);
+}
+
+function changeMusicians(delta) {
+  var input = byId('musicians');
+  if (!input) return;
+  var current = Math.round(numberValue('musicians'));
+  if (current < 0) current = 0;
+  input.value = Math.max(0, current + delta);
+  calculate();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', calculate);
+} else {
+  calculate();
+}
+</script>
+</body>
+</html>
