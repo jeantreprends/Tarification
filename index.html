@@ -27,6 +27,9 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(49
 .currency-input{position:relative}
 .currency-input input{padding-right:42px}
 .currency-symbol{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:750;color:var(--accent);pointer-events:none}
+.custom-formula{display:none;margin-top:12px;padding:14px;border:1px solid #dbe6eb;border-radius:12px;background:var(--accent-soft)}
+.custom-formula.visible{display:block}
+.custom-formula label{color:var(--accent)}
 .musician-control{display:grid;grid-template-columns:56px 1fr 56px;gap:10px;align-items:center}
 .musician-control input{text-align:center;font-weight:700;font-size:18px}
 .step-btn{height:46px;border:1px solid #cedce3;border-radius:10px;background:var(--accent-soft);color:var(--accent);
@@ -68,11 +71,19 @@ border-radius:8px;padding:10px;font-size:12px;overflow:auto;margin-top:8px}
 
 <div class="field">
 <label for="formula">Formule choisie</label>
-<select id="formula" onchange="calculate()" oninput="calculate()">
+<select id="formula" onchange="formulaChanged()" oninput="formulaChanged()">
 <option value="La courte Swing">La courte Swing — 1 200 €</option>
 <option value="La Swing tout-terrain">La Swing tout-terrain — 1 500 €</option>
 <option value="La complète du Swing">La complète du Swing — 1 800 €</option>
+<option value="Autre">Autre — montant personnalisé</option>
 </select>
+<div id="customFormulaField" class="custom-formula">
+<label for="customRate">Montant personnalisé</label>
+<div class="currency-input">
+<input id="customRate" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()">
+<span class="currency-symbol">€</span>
+</div>
+</div>
 </div>
 
 <div class="field">
@@ -196,10 +207,21 @@ function setSignedClass(id, value) {
   }
 }
 
+function formulaChanged() {
+  var formulaNode = byId('formula');
+  var customField = byId('customFormulaField');
+  var isCustom = formulaNode && formulaNode.value === 'Autre';
+  if (customField) {
+    if (isCustom) customField.classList.add('visible');
+    else customField.classList.remove('visible');
+  }
+  calculate();
+}
+
 function calculate() {
   var formulaNode = byId('formula');
   var formula = formulaNode ? formulaNode.value : '';
-  var net = rates[formula] || 0;
+  var net = formula === 'Autre' ? numberValue('customRate') : (rates[formula] || 0);
   var costs = numberValue('cost4') + numberValue('cost5') + numberValue('cost6') + numberValue('cost7');
   var fees = numberValue('musicians') * 150;
   var invoice = net + costs;
@@ -233,10 +255,14 @@ function changeMusicians(delta) {
   calculate();
 }
 
+function initialize() {
+  formulaChanged();
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', calculate);
+  document.addEventListener('DOMContentLoaded', initialize);
 } else {
-  calculate();
+  initialize();
 }
 </script>
 </body>
