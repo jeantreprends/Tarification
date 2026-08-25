@@ -36,18 +36,16 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(49
 font:700 24px/1 inherit;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
 .step-btn:active{transform:scale(.97);background:#e2edf2}
 .help{font-size:12px;color:var(--muted);margin-top:5px}
-.results{display:grid;gap:10px}
-.metric{padding:16px;border:1px solid var(--line);border-radius:13px;display:flex;
-justify-content:space-between;align-items:center;gap:15px}
-.metric span{color:var(--muted);font-size:13px}.metric strong{font-size:21px;letter-spacing:-.02em}
-.hero{background:#243f4f;color:#fff;border-radius:15px;padding:20px;margin-bottom:10px}
+.results{display:grid;gap:0}
+.metric{padding:14px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;display:flex;
+justify-content:space-between;align-items:baseline;gap:15px}
+.metric:first-child{padding-top:6px}
+.metric:last-child{border-bottom:0;padding-bottom:0}
+.metric span{color:var(--muted);font-size:13px}.metric strong{font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.hero{background:#243f4f;color:#fff;border-radius:15px;padding:20px;margin-bottom:16px}
 .hero span{font-size:13px;color:#d6e3e9}.hero strong{display:block;font-size:34px;margin-top:5px}
-.badge{display:inline-block;margin-top:7px;padding:4px 8px;border-radius:999px;font-size:12px}
 .good{color:var(--good)} .bad{color:var(--bad)}
-.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:16px}
 .full{grid-column:1/-1}
-.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f4f4f1;
-border-radius:8px;padding:10px;font-size:12px;overflow:auto;margin-top:8px}
 @media(max-width:760px){
   .grid{grid-template-columns:1fr}.full{grid-column:auto}
   .wrap{padding:24px 14px 40px}
@@ -55,6 +53,8 @@ border-radius:8px;padding:10px;font-size:12px;overflow:auto;margin-top:8px}
   .musician-control{grid-template-columns:64px 1fr 64px;gap:12px}
   .step-btn{height:56px;border-radius:12px;font-size:30px}
   .musician-control input{height:56px;font-size:20px}
+  .metric{padding:13px 0}
+  .metric strong{font-size:20px}
 }
 </style>
 </head>
