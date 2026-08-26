@@ -20,6 +20,7 @@ body.dark{
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);transition:background .22s ease,color .22s ease;
 font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font-family:inherit}
 .wrap{max-width:980px;margin:0 auto;padding:24px 20px 60px}
 .top-actions{display:flex;justify-content:flex-end;margin-bottom:18px}
 .theme-toggle{min-height:42px;border:1px solid var(--button-border);border-radius:999px;background:var(--card);color:var(--text);
@@ -38,7 +39,7 @@ label{display:block;font-size:13px;font-weight:650;margin-bottom:7px}
 label a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
 input,select{width:100%;height:46px;border:1px solid var(--input-border);border-radius:10px;
 padding:0 13px;font:inherit;background:var(--input-bg);color:var(--text);outline:none;transition:background .2s ease,border-color .2s ease,color .2s ease}
-input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(49,93,118,.12)}
 .currency-input{position:relative}
 .currency-input input{padding-right:42px}
 .currency-symbol{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:750;color:var(--accent);pointer-events:none}
@@ -51,6 +52,10 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-m
 font:700 24px/1 inherit;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
 .step-btn:active{transform:scale(.97);background:var(--button-active)}
 .help{font-size:12px;color:var(--muted);margin-top:5px}
+.save-btn{width:100%;min-height:50px;margin-top:7px;border:0;border-radius:12px;background:var(--accent);color:var(--card);
+font-size:14px;font-weight:800;cursor:pointer;touch-action:manipulation;padding:0 16px}
+body.dark .save-btn{color:#10202a}
+.save-btn:active{transform:scale(.99)}
 .results{display:grid;gap:0}
 .metric{padding:14px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;display:flex;
 justify-content:space-between;align-items:baseline;gap:15px}
@@ -61,6 +66,22 @@ justify-content:space-between;align-items:baseline;gap:15px}
 .hero span{font-size:13px;color:var(--hero-muted)}.hero strong{display:block;font-size:34px;margin-top:5px}
 .good{color:var(--good)} .bad{color:var(--bad)}
 .full{grid-column:1/-1}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:6px}
+.section-heading h2{margin-bottom:0}
+.history-count{font-size:12px;color:var(--muted)}
+.history-empty{padding:20px 0 4px;color:var(--muted);font-size:13px}
+.history-list{display:grid;gap:0}
+.history-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.history-item:last-child{border-bottom:0;padding-bottom:0}
+.history-main{min-width:0}
+.history-name{display:block;font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history-meta{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:5px;color:var(--muted);font-size:12px}
+.history-total{font-weight:750;color:var(--text)}
+.history-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.history-btn{min-height:38px;border:1px solid var(--button-border);border-radius:9px;background:var(--accent-soft);color:var(--accent);
+padding:0 11px;font-size:12px;font-weight:750;cursor:pointer;touch-action:manipulation}
+.history-btn:active{transform:scale(.97)}
+.history-btn.danger{background:transparent;color:var(--bad);border-color:var(--line)}
 @media(max-width:760px){
   .grid{grid-template-columns:1fr}.full{grid-column:auto}
   .wrap{padding:18px 14px 40px}
@@ -70,8 +91,12 @@ justify-content:space-between;align-items:baseline;gap:15px}
   .musician-control{grid-template-columns:64px 1fr 64px;gap:12px}
   .step-btn{height:56px;border-radius:12px;font-size:30px}
   .musician-control input{height:56px;font-size:20px}
+  .save-btn{min-height:54px;font-size:15px}
   .metric{padding:13px 0}
   .metric strong{font-size:20px}
+  .history-item{grid-template-columns:1fr;gap:12px;padding:17px 0}
+  .history-actions{justify-content:flex-start}
+  .history-btn{min-height:42px;padding:0 13px}
 }
 </style>
 </head>
@@ -158,6 +183,8 @@ justify-content:space-between;align-items:baseline;gap:15px}
 <span class="currency-symbol">€</span>
 </div>
 </div>
+
+<button class="save-btn" type="button" onclick="saveBilling()">Enregistrer cette facturation</button>
 </section>
 
 <section class="card">
@@ -179,6 +206,15 @@ justify-content:space-between;align-items:baseline;gap:15px}
 <div class="metric"><span>Marge nette réelle %</span><strong id="realMarginPct">0,00 %</strong></div>
 </div>
 </section>
+
+<section class="card full">
+<div class="section-heading">
+<h2>Historique</h2>
+<span id="historyCount" class="history-count"></span>
+</div>
+<div id="historyEmpty" class="history-empty">Aucune facturation enregistrée.</div>
+<div id="historyList" class="history-list"></div>
+</section>
 </div>
 </div>
 
@@ -188,6 +224,7 @@ var rates = {
   "La Swing tout-terrain": 1500,
   "La complète du Swing": 1800
 };
+var HISTORY_KEY = 'tarification-history-v1';
 
 function byId(id) {
   return document.getElementById(id);
@@ -278,6 +315,195 @@ function changeMusicians(delta) {
   calculate();
 }
 
+function currentBillingData() {
+  return {
+    formula: byId('formula') ? byId('formula').value : 'La courte Swing',
+    customRate: numberValue('customRate'),
+    musicians: numberValue('musicians'),
+    cost4: numberValue('cost4'),
+    cost5: numberValue('cost5'),
+    cost6: numberValue('cost6'),
+    cost7: numberValue('cost7'),
+    actual: numberValue('actual')
+  };
+}
+
+function totalFromData(data) {
+  if (!data) return 0;
+  var net = data.formula === 'Autre' ? Number(data.customRate || 0) : (rates[data.formula] || 0);
+  var costs = Number(data.cost4 || 0) + Number(data.cost5 || 0) + Number(data.cost6 || 0) + Number(data.cost7 || 0);
+  return net + costs;
+}
+
+function readHistory() {
+  try {
+    var parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function writeHistory(history) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    return true;
+  } catch (e) {
+    alert("Impossible d'enregistrer l'historique dans ce navigateur.");
+    return false;
+  }
+}
+
+function defaultBillingName() {
+  var now = new Date();
+  try {
+    return 'Facturation ' + now.toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  } catch (e) {
+    return 'Nouvelle facturation';
+  }
+}
+
+function saveBilling() {
+  var name = prompt('Nom de la facturation :', defaultBillingName());
+  if (name === null) return;
+  name = name.trim();
+  if (!name) {
+    alert('Le nom ne peut pas être vide.');
+    return;
+  }
+
+  var data = currentBillingData();
+  var history = readHistory();
+  history.unshift({
+    id: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8),
+    name: name,
+    savedAt: new Date().toISOString(),
+    total: totalFromData(data),
+    data: data
+  });
+
+  if (writeHistory(history)) renderHistory();
+}
+
+function loadBilling(id) {
+  var history = readHistory();
+  var item = history.find(function(entry){ return entry.id === id; });
+  if (!item || !item.data) return;
+  var data = item.data;
+
+  var formula = data.formula || 'La courte Swing';
+  var formulaNode = byId('formula');
+  if (formulaNode) {
+    var exists = Array.prototype.some.call(formulaNode.options, function(option){ return option.value === formula; });
+    formulaNode.value = exists ? formula : 'Autre';
+  }
+  if (byId('customRate')) byId('customRate').value = Number(data.customRate || 0);
+  if (byId('musicians')) byId('musicians').value = Number(data.musicians || 0);
+  if (byId('cost4')) byId('cost4').value = Number(data.cost4 || 0);
+  if (byId('cost5')) byId('cost5').value = Number(data.cost5 || 0);
+  if (byId('cost6')) byId('cost6').value = Number(data.cost6 || 0);
+  if (byId('cost7')) byId('cost7').value = Number(data.cost7 || 0);
+  if (byId('actual')) byId('actual').value = Number(data.actual || 0);
+
+  formulaChanged();
+  try { window.scrollTo({top:0,behavior:'smooth'}); } catch (e) { window.scrollTo(0,0); }
+}
+
+function renameBilling(id) {
+  var history = readHistory();
+  var item = history.find(function(entry){ return entry.id === id; });
+  if (!item) return;
+
+  var name = prompt('Nouveau nom :', item.name || 'Facturation');
+  if (name === null) return;
+  name = name.trim();
+  if (!name) {
+    alert('Le nom ne peut pas être vide.');
+    return;
+  }
+
+  item.name = name;
+  if (writeHistory(history)) renderHistory();
+}
+
+function deleteBilling(id) {
+  var history = readHistory();
+  var item = history.find(function(entry){ return entry.id === id; });
+  if (!item) return;
+
+  if (!confirm('Supprimer « ' + item.name + ' » ?\n\nCette action est définitive.')) return;
+  history = history.filter(function(entry){ return entry.id !== id; });
+  if (writeHistory(history)) renderHistory();
+}
+
+function formatHistoryDate(value) {
+  var date = new Date(value);
+  if (isNaN(date.getTime())) return '';
+  try {
+    return date.toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  } catch (e) {
+    return date.toLocaleString();
+  }
+}
+
+function historyButton(label, className, handler) {
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'history-btn' + (className ? ' ' + className : '');
+  button.textContent = label;
+  button.addEventListener('click', handler);
+  return button;
+}
+
+function renderHistory() {
+  var history = readHistory();
+  var list = byId('historyList');
+  var empty = byId('historyEmpty');
+  var count = byId('historyCount');
+  if (!list || !empty || !count) return;
+
+  list.textContent = '';
+  empty.style.display = history.length ? 'none' : 'block';
+  count.textContent = history.length ? history.length + (history.length > 1 ? ' facturations' : ' facturation') : '';
+
+  history.forEach(function(item) {
+    var row = document.createElement('div');
+    row.className = 'history-item';
+
+    var main = document.createElement('div');
+    main.className = 'history-main';
+
+    var name = document.createElement('strong');
+    name.className = 'history-name';
+    name.textContent = item.name || 'Facturation';
+
+    var meta = document.createElement('div');
+    meta.className = 'history-meta';
+
+    var date = document.createElement('span');
+    date.textContent = formatHistoryDate(item.savedAt);
+
+    var total = document.createElement('span');
+    total.className = 'history-total';
+    total.textContent = 'Total : ' + euro(Number.isFinite(Number(item.total)) ? Number(item.total) : totalFromData(item.data));
+
+    meta.appendChild(date);
+    meta.appendChild(total);
+    main.appendChild(name);
+    main.appendChild(meta);
+
+    var actions = document.createElement('div');
+    actions.className = 'history-actions';
+    actions.appendChild(historyButton('Charger', '', function(){ loadBilling(item.id); }));
+    actions.appendChild(historyButton('Renommer', '', function(){ renameBilling(item.id); }));
+    actions.appendChild(historyButton('Supprimer', 'danger', function(){ deleteBilling(item.id); }));
+
+    row.appendChild(main);
+    row.appendChild(actions);
+    list.appendChild(row);
+  });
+}
+
 function applyTheme(theme) {
   var isDark = theme === 'dark';
   document.body.classList.toggle('dark', isDark);
@@ -303,6 +529,7 @@ function initializeTheme() {
 function initialize() {
   initializeTheme();
   formulaChanged();
+  renderHistory();
 }
 
 if (document.readyState === 'loading') {
