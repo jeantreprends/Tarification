@@ -3,543 +3,183 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarification & marge</title>
+<title>Tarification & marge — Compact</title>
 <style>
 :root{
-  --bg:#f3f6f7;--card:#fff;--text:#171717;--muted:#6b6b6b;
-  --line:#e0e5e7;--accent:#315d76;--accent-soft:#edf4f7;--good:#176b45;--bad:#a53b3b;
+  --bg:#f3f6f7;--card:#fff;--text:#171717;--muted:#6b6b6b;--line:#e0e5e7;
+  --accent:#315d76;--accent-soft:#edf4f7;--good:#176b45;--bad:#a53b3b;
   --input-bg:#fff;--input-border:#d8d8d4;--hero-bg:#243f4f;--hero-muted:#d6e3e9;
   --button-border:#cedce3;--button-active:#e2edf2;--shadow:0 2px 10px rgba(0,0,0,.025);
 }
 body.dark{
-  --bg:#11181d;--card:#182127;--text:#eef3f5;--muted:#a7b3ba;
-  --line:#2b3941;--accent:#8fc4dd;--accent-soft:#21313a;--good:#72d6a4;--bad:#ff9191;
+  --bg:#11181d;--card:#182127;--text:#eef3f5;--muted:#a7b3ba;--line:#2b3941;
+  --accent:#8fc4dd;--accent-soft:#21313a;--good:#72d6a4;--bad:#ff9191;
   --input-bg:#11191e;--input-border:#34444d;--hero-bg:#294e61;--hero-muted:#c8dce5;
   --button-border:#3b5360;--button-active:#2a414c;--shadow:0 4px 18px rgba(0,0,0,.18);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);transition:background .22s ease,color .22s ease;
-font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button{font-family:inherit}
-.wrap{max-width:980px;margin:0 auto;padding:24px 20px 60px}
-.top-actions{display:flex;justify-content:flex-end;margin-bottom:18px}
-.theme-toggle{min-height:42px;border:1px solid var(--button-border);border-radius:999px;background:var(--card);color:var(--text);
-padding:0 15px;font:700 13px/1 inherit;display:inline-flex;align-items:center;gap:8px;cursor:pointer;touch-action:manipulation;
-box-shadow:var(--shadow);transition:background .2s ease,border-color .2s ease,color .2s ease,transform .1s ease}
-.theme-toggle:active{transform:scale(.97)}
-.theme-icon{font-size:16px;line-height:1}
-header{margin-bottom:28px} h1{font-size:32px;margin:0 0 6px;letter-spacing:-.03em}
-header p{margin:0;color:var(--muted)}
-.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;
-box-shadow:var(--shadow);transition:background .22s ease,border-color .22s ease}
-h2{font-size:16px;margin:0 0 20px;color:var(--accent)}
-.field{margin:0 0 17px}.field:last-child{margin-bottom:0}
-label{display:block;font-size:13px;font-weight:650;margin-bottom:7px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .2s,color .2s}
+button,input,select{font:inherit}
+.wrap{max-width:980px;margin:0 auto;padding:16px 16px 32px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+h1{font-size:25px;line-height:1.1;margin:0;letter-spacing:-.03em}
+.theme-toggle{height:38px;border:1px solid var(--button-border);border-radius:999px;background:var(--card);color:var(--text);padding:0 12px;font-size:12px;font-weight:750;display:flex;align-items:center;gap:7px;box-shadow:var(--shadow);cursor:pointer}
+.layout{display:grid;grid-template-columns:1.08fr .92fr;gap:12px;align-items:start}
+.stack{display:grid;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+h2{font-size:14px;color:var(--accent);margin:0 0 12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.field{min-width:0}.field.full{grid-column:1/-1}
+label{display:block;font-size:11px;font-weight:700;margin:0 0 5px;color:var(--text)}
 label a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
-input,select{width:100%;height:46px;border:1px solid var(--input-border);border-radius:10px;
-padding:0 13px;font:inherit;background:var(--input-bg);color:var(--text);outline:none;transition:background .2s ease,border-color .2s ease,color .2s ease}
-input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(49,93,118,.12)}
-.currency-input{position:relative}
-.currency-input input{padding-right:42px}
-.currency-symbol{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:750;color:var(--accent);pointer-events:none}
-.custom-formula{display:none;margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--accent-soft)}
+input,select{width:100%;height:40px;border:1px solid var(--input-border);border-radius:9px;background:var(--input-bg);color:var(--text);padding:0 11px;outline:none}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(49,93,118,.11)}
+.currency-input{position:relative}.currency-input input{padding-right:34px}.currency-symbol{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800;color:var(--accent);pointer-events:none}
+.custom-formula{display:none;margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--accent-soft)}
 .custom-formula.visible{display:block}
-.custom-formula label{color:var(--accent)}
-.musician-control{display:grid;grid-template-columns:56px 1fr 56px;gap:10px;align-items:center}
-.musician-control input{text-align:center;font-weight:700;font-size:18px}
-.step-btn{height:46px;border:1px solid var(--button-border);border-radius:10px;background:var(--accent-soft);color:var(--accent);
-font:700 24px/1 inherit;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
-.step-btn:active{transform:scale(.97);background:var(--button-active)}
-.help{font-size:12px;color:var(--muted);margin-top:5px}
-.save-btn{width:100%;min-height:50px;margin-top:7px;border:0;border-radius:12px;background:var(--accent);color:var(--card);
-font-size:14px;font-weight:800;cursor:pointer;touch-action:manipulation;padding:0 16px}
+.musician-control{display:grid;grid-template-columns:44px 1fr 44px;gap:7px}.musician-control input{text-align:center;font-weight:800}
+.step-btn{height:40px;border:1px solid var(--button-border);border-radius:9px;background:var(--accent-soft);color:var(--accent);font-size:22px;font-weight:800;cursor:pointer;touch-action:manipulation}
+.help{font-size:10px;color:var(--muted);margin-top:4px}
+.action-row{display:flex;justify-content:flex-end;margin-top:12px}
+.save-btn{height:40px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-size:12px;font-weight:800;padding:0 15px;cursor:pointer}
 body.dark .save-btn{color:#10202a}
-.save-btn:active{transform:scale(.99)}
-.results{display:grid;gap:0}
-.metric{padding:14px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;display:flex;
-justify-content:space-between;align-items:baseline;gap:15px}
-.metric:first-child{padding-top:6px}
-.metric:last-child{border-bottom:0;padding-bottom:0}
-.metric span{color:var(--muted);font-size:13px}.metric strong{font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.hero{background:var(--hero-bg);color:#fff;border-radius:15px;padding:20px;margin-bottom:16px;transition:background .22s ease}
-.hero span{font-size:13px;color:var(--hero-muted)}.hero strong{display:block;font-size:34px;margin-top:5px}
-.good{color:var(--good)} .bad{color:var(--bad)}
-.full{grid-column:1/-1}
-.real-input{padding:16px 0 18px;border-bottom:1px solid var(--line);margin-bottom:2px}
-.real-input label{color:var(--accent);font-size:13px}
-.real-input .currency-input{max-width:360px}
-.section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:6px}
-.section-heading h2{margin-bottom:0}
-.history-count{font-size:12px;color:var(--muted)}
-.history-empty{padding:20px 0 4px;color:var(--muted);font-size:13px}
-.history-list{display:grid;gap:0}
-.history-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
-.history-item:last-child{border-bottom:0;padding-bottom:0}
-.history-main{min-width:0}
-.history-name{display:block;font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.history-meta{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:5px;color:var(--muted);font-size:12px}
-.history-total{font-weight:750;color:var(--text)}
-.history-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
-.history-btn{min-height:38px;border:1px solid var(--button-border);border-radius:9px;background:var(--accent-soft);color:var(--accent);
-padding:0 11px;font-size:12px;font-weight:750;cursor:pointer;touch-action:manipulation}
-.history-btn:active{transform:scale(.97)}
-.history-btn.danger{background:transparent;color:var(--bad);border-color:var(--line)}
+.hero{background:var(--hero-bg);color:#fff;border-radius:12px;padding:14px 15px;margin-bottom:10px}.hero span{font-size:11px;color:var(--hero-muted)}.hero strong{display:block;font-size:30px;line-height:1.05;margin-top:3px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}
+.result-item{padding:10px 0;border-bottom:1px solid var(--line);min-width:0}.result-item:nth-last-child(-n+2){border-bottom:0}.result-item span{display:block;font-size:10px;color:var(--muted);margin-bottom:2px}.result-item strong{display:block;font-size:18px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.good{color:var(--good)}.bad{color:var(--bad)}
+.real-grid{display:grid;grid-template-columns:1.15fr .85fr .7fr;gap:16px;align-items:end}.real-grid .result-item{border:0;padding:0}.real-grid .result-item strong{font-size:20px}
+.history-card{padding:0;overflow:hidden}.history-toggle{width:100%;border:0;background:transparent;color:var(--text);padding:13px 16px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:800;cursor:pointer}.history-toggle span:last-child{font-size:11px;color:var(--muted);font-weight:650}.history-body{display:none;border-top:1px solid var(--line);padding:0 16px 12px}.history-card.open .history-body{display:block}.history-empty{padding:14px 0 2px;color:var(--muted);font-size:12px}.history-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.history-name{display:block;font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.history-meta{font-size:10px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 9px;margin-top:3px}.history-total{color:var(--text);font-weight:750}.history-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.history-btn{height:32px;border:1px solid var(--button-border);border-radius:8px;background:var(--accent-soft);color:var(--accent);padding:0 8px;font-size:10px;font-weight:750;cursor:pointer}.history-btn.danger{background:transparent;color:var(--bad);border-color:var(--line)}
 @media(max-width:760px){
-  .grid{grid-template-columns:1fr}.full{grid-column:auto}
-  .wrap{padding:18px 14px 40px}
-  .top-actions{margin-bottom:14px}
-  .theme-toggle{min-height:46px;padding:0 16px;font-size:14px}
-  .card{padding:20px}
-  .musician-control{grid-template-columns:64px 1fr 64px;gap:12px}
-  .step-btn{height:56px;border-radius:12px;font-size:30px}
-  .musician-control input{height:56px;font-size:20px}
-  .save-btn{min-height:54px;font-size:15px}
-  .metric{padding:13px 0}
-  .metric strong{font-size:20px}
-  .real-input .currency-input{max-width:none}
-  .history-item{grid-template-columns:1fr;gap:12px;padding:17px 0}
-  .history-actions{justify-content:flex-start}
-  .history-btn{min-height:42px;padding:0 13px}
+  .wrap{padding:12px 10px 24px}.topbar{margin-bottom:9px}h1{font-size:22px}.theme-toggle{height:36px;padding:0 10px;font-size:11px}
+  .layout{grid-template-columns:1fr;gap:9px}.stack{gap:9px}.card{border-radius:12px;padding:13px}h2{margin-bottom:10px}
+  .form-grid{gap:8px}.field.full{grid-column:1/-1}input,select{height:39px;font-size:13px}.musician-control{grid-template-columns:48px 1fr 48px}.step-btn{height:44px;font-size:24px}.musician-control input{height:44px}
+  .action-row{margin-top:9px}.save-btn{height:42px;width:100%}.hero{padding:13px 14px;margin-bottom:7px}.hero strong{font-size:28px}
+  .result-grid{column-gap:14px}.result-item{padding:8px 0}.result-item strong{font-size:16px}.real-grid{grid-template-columns:1.2fr 1fr 1fr;gap:10px}.real-grid label{font-size:10px}.real-grid .result-item strong{font-size:17px}.real-grid .result-item span{font-size:9px}
+  .history-item{grid-template-columns:1fr;gap:7px}.history-actions{justify-content:flex-start}.history-btn{height:34px}
 }
+@media(max-width:390px){.real-grid{grid-template-columns:1fr 1fr}.real-input{grid-column:1/-1}.result-grid{column-gap:10px}.result-item strong{font-size:15px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top-actions">
-<button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()" aria-pressed="false">
-<span id="themeIcon" class="theme-icon" aria-hidden="true">☾</span>
-<span id="themeLabel">Mode nuit</span>
-</button>
-</div>
-<header>
-<h1>Tarification & marge</h1>
-<p>Calculateur de tarif, coûts, cachets et marge réelle.</p>
-</header>
+  <div class="topbar">
+    <h1>Tarification & marge</h1>
+    <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()" aria-pressed="false"><span id="themeIcon">☾</span><span id="themeLabel">Nuit</span></button>
+  </div>
 
-<div class="grid">
-<section class="card">
-<h2>Paramètres de la presta</h2>
+  <div class="layout">
+    <section class="card">
+      <h2>Paramètres de la presta</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label for="formula">Formule choisie</label>
+          <select id="formula" onchange="formulaChanged()" oninput="formulaChanged()">
+            <option value="La courte Swing">La courte Swing — 1 200 €</option>
+            <option value="La Swing tout-terrain">La Swing tout-terrain — 1 500 €</option>
+            <option value="La complète du Swing">La complète du Swing — 1 800 €</option>
+            <option value="Autre">Autre — montant personnalisé</option>
+          </select>
+          <div id="customFormulaField" class="custom-formula">
+            <label for="customRate">Montant personnalisé</label>
+            <div class="currency-input"><input id="customRate" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()"><span class="currency-symbol">€</span></div>
+          </div>
+        </div>
 
-<div class="field">
-<label for="formula">Formule choisie</label>
-<select id="formula" onchange="formulaChanged()" oninput="formulaChanged()">
-<option value="La courte Swing">La courte Swing — 1 200 €</option>
-<option value="La Swing tout-terrain">La Swing tout-terrain — 1 500 €</option>
-<option value="La complète du Swing">La complète du Swing — 1 800 €</option>
-<option value="Autre">Autre — montant personnalisé</option>
-</select>
-<div id="customFormulaField" class="custom-formula">
-<label for="customRate">Montant personnalisé</label>
-<div class="currency-input">
-<input id="customRate" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()">
-<span class="currency-symbol">€</span>
-</div>
-</div>
-</div>
+        <div class="field full">
+          <label for="musicians">Nombre de musiciens</label>
+          <div class="musician-control">
+            <button class="step-btn" type="button" aria-label="Retirer un musicien" onclick="changeMusicians(-1)">−</button>
+            <input id="musicians" type="number" min="0" step="1" value="4" inputmode="numeric" oninput="calculate()" onchange="calculate()">
+            <button class="step-btn" type="button" aria-label="Ajouter un musicien" onclick="changeMusicians(1)">+</button>
+          </div>
+          <div class="help">150 € par musicien</div>
+        </div>
 
-<div class="field">
-<label for="musicians">Nombre de musiciens</label>
-<div class="musician-control">
-<button class="step-btn" id="musiciansMinus" type="button" aria-label="Retirer un musicien" onclick="changeMusicians(-1)">−</button>
-<input id="musicians" type="number" min="0" step="1" value="4" inputmode="numeric" oninput="calculate()" onchange="calculate()">
-<button class="step-btn" id="musiciansPlus" type="button" aria-label="Ajouter un musicien" onclick="changeMusicians(1)">+</button>
-</div>
-<div class="help">Cachet calculé à 150 € par musicien.</div>
-</div>
+        <div class="field">
+          <label for="cost4">Essence + péages (<a href="https://futeroute.fr/" target="_blank" rel="noopener noreferrer">calculer</a>)</label>
+          <div class="currency-input"><input id="cost4" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()"><span class="currency-symbol">€</span></div>
+        </div>
+        <div class="field">
+          <label for="cost5">Location van</label>
+          <div class="currency-input"><input id="cost5" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()"><span class="currency-symbol">€</span></div>
+        </div>
+        <div class="field">
+          <label for="cost6">Trains</label>
+          <div class="currency-input"><input id="cost6" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()"><span class="currency-symbol">€</span></div>
+        </div>
+        <div class="field">
+          <label for="cost7">Autres coûts</label>
+          <div class="currency-input"><input id="cost7" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()"><span class="currency-symbol">€</span></div>
+        </div>
+      </div>
+      <div class="action-row"><button class="save-btn" type="button" onclick="saveBilling()">Enregistrer</button></div>
+    </section>
 
-<div class="field">
-<label for="cost4">Coût essence et péages (<a href="https://futeroute.fr/" target="_blank" rel="noopener noreferrer">calculer ici</a>)</label>
-<div class="currency-input">
-<input id="cost4" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()">
-<span class="currency-symbol">€</span>
-</div>
-</div>
+    <div class="stack">
+      <section class="card">
+        <h2>Résultats</h2>
+        <div class="hero"><span>Total à facturer</span><strong id="invoice">1 200,00 €</strong></div>
+        <div class="result-grid">
+          <div class="result-item"><span>Tarif net</span><strong id="net">1 200,00 €</strong></div>
+          <div class="result-item"><span>Frais réels</span><strong id="costs">0,00 €</strong></div>
+          <div class="result-item"><span>Cachets</span><strong id="fees">600,00 €</strong></div>
+          <div class="result-item"><span>Marge visée €</span><strong id="margin">600,00 €</strong></div>
+          <div class="result-item"><span>Marge visée %</span><strong id="marginPct">50,00 %</strong></div>
+        </div>
+      </section>
 
-<div class="field">
-<label for="cost5">Coût location d'un van</label>
-<div class="currency-input">
-<input id="cost5" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()">
-<span class="currency-symbol">€</span>
-</div>
-</div>
+      <section class="card">
+        <h2>Marge réelle</h2>
+        <div class="real-grid">
+          <div class="real-input">
+            <label for="actual">Tarif réellement facturé</label>
+            <div class="currency-input"><input id="actual" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()"><span class="currency-symbol">€</span></div>
+          </div>
+          <div class="result-item"><span>Marge réelle €</span><strong id="realMargin">-600,00 €</strong></div>
+          <div class="result-item"><span>Marge réelle %</span><strong id="realMarginPct">0,00 %</strong></div>
+        </div>
+      </section>
+    </div>
 
-<div class="field">
-<label for="cost6">Coût des trains</label>
-<div class="currency-input">
-<input id="cost6" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()">
-<span class="currency-symbol">€</span>
-</div>
-</div>
-
-<div class="field">
-<label for="cost7">Autres coûts</label>
-<div class="currency-input">
-<input id="cost7" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()">
-<span class="currency-symbol">€</span>
-</div>
-</div>
-
-<button class="save-btn" type="button" onclick="saveBilling()">Enregistrer cette facturation</button>
-</section>
-
-<section class="card">
-<h2>Résultats</h2>
-<div class="hero"><span>Total à facturer</span><strong id="invoice">1 200,00 €</strong></div>
-<div class="results">
-<div class="metric"><span>Tarif net</span><strong id="net">1 200,00 €</strong></div>
-<div class="metric"><span>Frais réels</span><strong id="costs">0,00 €</strong></div>
-<div class="metric"><span>Cachets</span><strong id="fees">600,00 €</strong></div>
-<div class="metric"><span>Marge nette visée €</span><strong id="margin">600,00 €</strong></div>
-<div class="metric"><span>Marge nette visée %</span><strong id="marginPct">50,00 %</strong></div>
-</div>
-</section>
-
-<section class="card full">
-<h2>Marge réelle</h2>
-<div class="real-input">
-<label for="actual">Tarif réellement facturé</label>
-<div class="currency-input">
-<input id="actual" type="number" min="0" step="0.01" value="0" inputmode="decimal" oninput="calculate()" onchange="calculate()">
-<span class="currency-symbol">€</span>
-</div>
-</div>
-<div class="results">
-<div class="metric"><span>Marge nette réelle €</span><strong id="realMargin">-600,00 €</strong></div>
-<div class="metric"><span>Marge nette réelle %</span><strong id="realMarginPct">0,00 %</strong></div>
-</div>
-</section>
-
-<section class="card full">
-<div class="section-heading">
-<h2>Historique</h2>
-<span id="historyCount" class="history-count"></span>
-</div>
-<div id="historyEmpty" class="history-empty">Aucune facturation enregistrée.</div>
-<div id="historyList" class="history-list"></div>
-</section>
-</div>
+    <section id="historyCard" class="card history-card" style="grid-column:1/-1">
+      <button class="history-toggle" type="button" onclick="toggleHistory()"><span>Historique</span><span id="historyCount"></span></button>
+      <div class="history-body">
+        <div id="historyEmpty" class="history-empty">Aucune facturation enregistrée.</div>
+        <div id="historyList"></div>
+      </div>
+    </section>
+  </div>
 </div>
 
 <script>
-var rates = {
-  "La courte Swing": 1200,
-  "La Swing tout-terrain": 1500,
-  "La complète du Swing": 1800
-};
-var HISTORY_KEY = 'tarification-history-v1';
-
-function byId(id) {
-  return document.getElementById(id);
-}
-
-function numberValue(id) {
-  var node = byId(id);
-  if (!node) return 0;
-  var value = parseFloat(String(node.value).replace(',', '.'));
-  return isNaN(value) ? 0 : value;
-}
-
-function euro(value) {
-  var n = isFinite(value) ? value : 0;
-  try {
-    return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR'}).format(n);
-  } catch (e) {
-    return n.toFixed(2).replace('.', ',') + ' €';
-  }
-}
-
-function percent(value) {
-  var n = isFinite(value) ? value : 0;
-  try {
-    return new Intl.NumberFormat('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n) + ' %';
-  } catch (e) {
-    return n.toFixed(2).replace('.', ',') + ' %';
-  }
-}
-
-function setSignedClass(id, value) {
-  var node = byId(id);
-  if (!node) return;
-  if (value >= 0) {
-    node.classList.add('good');
-    node.classList.remove('bad');
-  } else {
-    node.classList.add('bad');
-    node.classList.remove('good');
-  }
-}
-
-function formulaChanged() {
-  var formulaNode = byId('formula');
-  var customField = byId('customFormulaField');
-  var isCustom = formulaNode && formulaNode.value === 'Autre';
-  if (customField) {
-    if (isCustom) customField.classList.add('visible');
-    else customField.classList.remove('visible');
-  }
-  calculate();
-}
-
-function calculate() {
-  var formulaNode = byId('formula');
-  var formula = formulaNode ? formulaNode.value : '';
-  var net = formula === 'Autre' ? numberValue('customRate') : (rates[formula] || 0);
-  var costs = numberValue('cost4') + numberValue('cost5') + numberValue('cost6') + numberValue('cost7');
-  var fees = numberValue('musicians') * 150;
-  var invoice = net + costs;
-  var margin = invoice - costs - fees;
-  var marginPct = invoice ? (margin / invoice) * 100 : 0;
-  var actual = numberValue('actual');
-  var realMargin = actual - costs - fees;
-  var realMarginPct = actual ? (realMargin / actual) * 100 : 0;
-
-  byId('net').textContent = euro(net);
-  byId('costs').textContent = euro(costs);
-  byId('fees').textContent = euro(fees);
-  byId('invoice').textContent = euro(invoice);
-  byId('margin').textContent = euro(margin);
-  byId('marginPct').textContent = percent(marginPct);
-  byId('realMargin').textContent = euro(realMargin);
-  byId('realMarginPct').textContent = percent(realMarginPct);
-
-  setSignedClass('margin', margin);
-  setSignedClass('marginPct', marginPct);
-  setSignedClass('realMargin', realMargin);
-  setSignedClass('realMarginPct', realMarginPct);
-}
-
-function changeMusicians(delta) {
-  var input = byId('musicians');
-  if (!input) return;
-  var current = Math.round(numberValue('musicians'));
-  if (current < 0) current = 0;
-  input.value = Math.max(0, current + delta);
-  calculate();
-}
-
-function currentBillingData() {
-  return {
-    formula: byId('formula') ? byId('formula').value : 'La courte Swing',
-    customRate: numberValue('customRate'),
-    musicians: numberValue('musicians'),
-    cost4: numberValue('cost4'),
-    cost5: numberValue('cost5'),
-    cost6: numberValue('cost6'),
-    cost7: numberValue('cost7'),
-    actual: numberValue('actual')
-  };
-}
-
-function totalFromData(data) {
-  if (!data) return 0;
-  var net = data.formula === 'Autre' ? Number(data.customRate || 0) : (rates[data.formula] || 0);
-  var costs = Number(data.cost4 || 0) + Number(data.cost5 || 0) + Number(data.cost6 || 0) + Number(data.cost7 || 0);
-  return net + costs;
-}
-
-function readHistory() {
-  try {
-    var parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function writeHistory(history) {
-  try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    return true;
-  } catch (e) {
-    alert("Impossible d'enregistrer l'historique dans ce navigateur.");
-    return false;
-  }
-}
-
-function defaultBillingName() {
-  var now = new Date();
-  try {
-    return 'Facturation ' + now.toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  } catch (e) {
-    return 'Nouvelle facturation';
-  }
-}
-
-function saveBilling() {
-  var name = prompt('Nom de la facturation :', defaultBillingName());
-  if (name === null) return;
-  name = name.trim();
-  if (!name) {
-    alert('Le nom ne peut pas être vide.');
-    return;
-  }
-
-  var data = currentBillingData();
-  var history = readHistory();
-  history.unshift({
-    id: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8),
-    name: name,
-    savedAt: new Date().toISOString(),
-    total: totalFromData(data),
-    data: data
-  });
-
-  if (writeHistory(history)) renderHistory();
-}
-
-function loadBilling(id) {
-  var history = readHistory();
-  var item = history.find(function(entry){ return entry.id === id; });
-  if (!item || !item.data) return;
-  var data = item.data;
-
-  var formula = data.formula || 'La courte Swing';
-  var formulaNode = byId('formula');
-  if (formulaNode) {
-    var exists = Array.prototype.some.call(formulaNode.options, function(option){ return option.value === formula; });
-    formulaNode.value = exists ? formula : 'Autre';
-  }
-  if (byId('customRate')) byId('customRate').value = Number(data.customRate || 0);
-  if (byId('musicians')) byId('musicians').value = Number(data.musicians || 0);
-  if (byId('cost4')) byId('cost4').value = Number(data.cost4 || 0);
-  if (byId('cost5')) byId('cost5').value = Number(data.cost5 || 0);
-  if (byId('cost6')) byId('cost6').value = Number(data.cost6 || 0);
-  if (byId('cost7')) byId('cost7').value = Number(data.cost7 || 0);
-  if (byId('actual')) byId('actual').value = Number(data.actual || 0);
-
-  formulaChanged();
-  try { window.scrollTo({top:0,behavior:'smooth'}); } catch (e) { window.scrollTo(0,0); }
-}
-
-function renameBilling(id) {
-  var history = readHistory();
-  var item = history.find(function(entry){ return entry.id === id; });
-  if (!item) return;
-
-  var name = prompt('Nouveau nom :', item.name || 'Facturation');
-  if (name === null) return;
-  name = name.trim();
-  if (!name) {
-    alert('Le nom ne peut pas être vide.');
-    return;
-  }
-
-  item.name = name;
-  if (writeHistory(history)) renderHistory();
-}
-
-function deleteBilling(id) {
-  var history = readHistory();
-  var item = history.find(function(entry){ return entry.id === id; });
-  if (!item) return;
-
-  if (!confirm('Supprimer « ' + item.name + ' » ?\n\nCette action est définitive.')) return;
-  history = history.filter(function(entry){ return entry.id !== id; });
-  if (writeHistory(history)) renderHistory();
-}
-
-function formatHistoryDate(value) {
-  var date = new Date(value);
-  if (isNaN(date.getTime())) return '';
-  try {
-    return date.toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  } catch (e) {
-    return date.toLocaleString();
-  }
-}
-
-function historyButton(label, className, handler) {
-  var button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'history-btn' + (className ? ' ' + className : '');
-  button.textContent = label;
-  button.addEventListener('click', handler);
-  return button;
-}
-
-function renderHistory() {
-  var history = readHistory();
-  var list = byId('historyList');
-  var empty = byId('historyEmpty');
-  var count = byId('historyCount');
-  if (!list || !empty || !count) return;
-
-  list.textContent = '';
-  empty.style.display = history.length ? 'none' : 'block';
-  count.textContent = history.length ? history.length + (history.length > 1 ? ' facturations' : ' facturation') : '';
-
-  history.forEach(function(item) {
-    var row = document.createElement('div');
-    row.className = 'history-item';
-
-    var main = document.createElement('div');
-    main.className = 'history-main';
-
-    var name = document.createElement('strong');
-    name.className = 'history-name';
-    name.textContent = item.name || 'Facturation';
-
-    var meta = document.createElement('div');
-    meta.className = 'history-meta';
-
-    var date = document.createElement('span');
-    date.textContent = formatHistoryDate(item.savedAt);
-
-    var total = document.createElement('span');
-    total.className = 'history-total';
-    total.textContent = 'Total : ' + euro(Number.isFinite(Number(item.total)) ? Number(item.total) : totalFromData(item.data));
-
-    meta.appendChild(date);
-    meta.appendChild(total);
-    main.appendChild(name);
-    main.appendChild(meta);
-
-    var actions = document.createElement('div');
-    actions.className = 'history-actions';
-    actions.appendChild(historyButton('Charger', '', function(){ loadBilling(item.id); }));
-    actions.appendChild(historyButton('Renommer', '', function(){ renameBilling(item.id); }));
-    actions.appendChild(historyButton('Supprimer', 'danger', function(){ deleteBilling(item.id); }));
-
-    row.appendChild(main);
-    row.appendChild(actions);
-    list.appendChild(row);
-  });
-}
-
-function applyTheme(theme) {
-  var isDark = theme === 'dark';
-  document.body.classList.toggle('dark', isDark);
-  var button = byId('themeToggle');
-  var icon = byId('themeIcon');
-  var label = byId('themeLabel');
-  if (button) button.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-  if (icon) icon.textContent = isDark ? '☀' : '☾';
-  if (label) label.textContent = isDark ? 'Mode jour' : 'Mode nuit';
-  try { localStorage.setItem('tarification-theme', theme); } catch (e) {}
-}
-
-function toggleTheme() {
-  applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark');
-}
-
-function initializeTheme() {
-  var saved = null;
-  try { saved = localStorage.getItem('tarification-theme'); } catch (e) {}
-  applyTheme(saved === 'dark' ? 'dark' : 'light');
-}
-
-function initialize() {
-  initializeTheme();
-  formulaChanged();
-  renderHistory();
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initialize);
-} else {
-  initialize();
-}
+var rates={"La courte Swing":1200,"La Swing tout-terrain":1500,"La complète du Swing":1800};
+var HISTORY_KEY='tarification-history-v1';
+function byId(id){return document.getElementById(id)}
+function numberValue(id){var n=byId(id);if(!n)return 0;var v=parseFloat(String(n.value).replace(',','.'));return isNaN(v)?0:v}
+function euro(value){var n=isFinite(value)?value:0;try{return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n)}catch(e){return n.toFixed(2).replace('.',',')+' €'}}
+function percent(value){var n=isFinite(value)?value:0;try{return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+' %'}catch(e){return n.toFixed(2).replace('.',',')+' %'}}
+function setSignedClass(id,value){var n=byId(id);if(!n)return;n.classList.toggle('good',value>=0);n.classList.toggle('bad',value<0)}
+function formulaChanged(){var f=byId('formula'),c=byId('customFormulaField'),isCustom=f&&f.value==='Autre';if(c)c.classList.toggle('visible',isCustom);calculate()}
+function calculate(){var f=byId('formula'),formula=f?f.value:'',net=formula==='Autre'?numberValue('customRate'):(rates[formula]||0),costs=numberValue('cost4')+numberValue('cost5')+numberValue('cost6')+numberValue('cost7'),fees=numberValue('musicians')*150,invoice=net+costs,margin=invoice-costs-fees,marginPct=invoice?margin/invoice*100:0,actual=numberValue('actual'),realMargin=actual-costs-fees,realMarginPct=actual?realMargin/actual*100:0;byId('net').textContent=euro(net);byId('costs').textContent=euro(costs);byId('fees').textContent=euro(fees);byId('invoice').textContent=euro(invoice);byId('margin').textContent=euro(margin);byId('marginPct').textContent=percent(marginPct);byId('realMargin').textContent=euro(realMargin);byId('realMarginPct').textContent=percent(realMarginPct);setSignedClass('margin',margin);setSignedClass('marginPct',marginPct);setSignedClass('realMargin',realMargin);setSignedClass('realMarginPct',realMarginPct)}
+function changeMusicians(delta){var i=byId('musicians');if(!i)return;var c=Math.round(numberValue('musicians'));if(c<0)c=0;i.value=Math.max(0,c+delta);calculate()}
+function currentBillingData(){return{formula:byId('formula')?byId('formula').value:'La courte Swing',customRate:numberValue('customRate'),musicians:numberValue('musicians'),cost4:numberValue('cost4'),cost5:numberValue('cost5'),cost6:numberValue('cost6'),cost7:numberValue('cost7'),actual:numberValue('actual')}}
+function totalFromData(d){if(!d)return 0;var net=d.formula==='Autre'?Number(d.customRate||0):(rates[d.formula]||0),costs=Number(d.cost4||0)+Number(d.cost5||0)+Number(d.cost6||0)+Number(d.cost7||0);return net+costs}
+function readHistory(){try{var p=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');return Array.isArray(p)?p:[]}catch(e){return[]}}
+function writeHistory(h){try{localStorage.setItem(HISTORY_KEY,JSON.stringify(h));return true}catch(e){alert("Impossible d'enregistrer l'historique dans ce navigateur.");return false}}
+function defaultBillingName(){var n=new Date();try{return'Facturation '+n.toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return'Nouvelle facturation'}}
+function saveBilling(){var name=prompt('Nom de la facturation :',defaultBillingName());if(name===null)return;name=name.trim();if(!name){alert('Le nom ne peut pas être vide.');return}var data=currentBillingData(),history=readHistory();history.unshift({id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),name:name,savedAt:new Date().toISOString(),total:totalFromData(data),data:data});if(writeHistory(history)){renderHistory();byId('historyCard').classList.add('open')}}
+function loadBilling(id){var h=readHistory(),item=h.find(function(e){return e.id===id});if(!item||!item.data)return;var d=item.data,f=d.formula||'La courte Swing',node=byId('formula');if(node){var exists=Array.prototype.some.call(node.options,function(o){return o.value===f});node.value=exists?f:'Autre'}byId('customRate').value=Number(d.customRate||0);byId('musicians').value=Number(d.musicians||0);byId('cost4').value=Number(d.cost4||0);byId('cost5').value=Number(d.cost5||0);byId('cost6').value=Number(d.cost6||0);byId('cost7').value=Number(d.cost7||0);byId('actual').value=Number(d.actual||0);formulaChanged();window.scrollTo(0,0)}
+function renameBilling(id){var h=readHistory(),item=h.find(function(e){return e.id===id});if(!item)return;var name=prompt('Nouveau nom :',item.name||'Facturation');if(name===null)return;name=name.trim();if(!name){alert('Le nom ne peut pas être vide.');return}item.name=name;if(writeHistory(h))renderHistory()}
+function deleteBilling(id){var h=readHistory(),item=h.find(function(e){return e.id===id});if(!item)return;if(!confirm('Supprimer « '+item.name+' » ?\n\nCette action est définitive.'))return;h=h.filter(function(e){return e.id!==id});if(writeHistory(h))renderHistory()}
+function formatHistoryDate(v){var d=new Date(v);if(isNaN(d.getTime()))return'';try{return d.toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return d.toLocaleString()}}
+function historyButton(label,className,handler){var b=document.createElement('button');b.type='button';b.className='history-btn'+(className?' '+className:'');b.textContent=label;b.addEventListener('click',handler);return b}
+function renderHistory(){var h=readHistory(),list=byId('historyList'),empty=byId('historyEmpty'),count=byId('historyCount');if(!list||!empty||!count)return;list.textContent='';empty.style.display=h.length?'none':'block';count.textContent=h.length?h.length+(h.length>1?' facturations':' facturation'):'';h.forEach(function(item){var row=document.createElement('div');row.className='history-item';var main=document.createElement('div'),name=document.createElement('strong'),meta=document.createElement('div'),date=document.createElement('span'),total=document.createElement('span');name.className='history-name';name.textContent=item.name||'Facturation';meta.className='history-meta';date.textContent=formatHistoryDate(item.savedAt);total.className='history-total';total.textContent='Total : '+euro(Number.isFinite(Number(item.total))?Number(item.total):totalFromData(item.data));meta.appendChild(date);meta.appendChild(total);main.appendChild(name);main.appendChild(meta);var actions=document.createElement('div');actions.className='history-actions';actions.appendChild(historyButton('Charger','',function(){loadBilling(item.id)}));actions.appendChild(historyButton('Renommer','',function(){renameBilling(item.id)}));actions.appendChild(historyButton('Supprimer','danger',function(){deleteBilling(item.id)}));row.appendChild(main);row.appendChild(actions);list.appendChild(row)})}
+function toggleHistory(){byId('historyCard').classList.toggle('open')}
+function applyTheme(theme){var dark=theme==='dark';document.body.classList.toggle('dark',dark);byId('themeToggle').setAttribute('aria-pressed',dark?'true':'false');byId('themeIcon').textContent=dark?'☀':'☾';byId('themeLabel').textContent=dark?'Jour':'Nuit';try{localStorage.setItem('tarification-theme',theme)}catch(e){}}
+function toggleTheme(){applyTheme(document.body.classList.contains('dark')?'light':'dark')}
+function initializeTheme(){var saved=null;try{saved=localStorage.getItem('tarification-theme')}catch(e){}applyTheme(saved==='dark'?'dark':'light')}
+function initialize(){initializeTheme();formulaChanged();renderHistory()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize);else initialize();
 </script>
 </body>
 </html>
